@@ -4,7 +4,8 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 
 ## 1. Do before announcing the event (August)
 
-- [ ] **Supabase redirect URLs.** In Supabase: Authentication, URL Configuration, Redirect URLs, add `https://events.theaugustdispatch.com/admin` and `http://localhost:3000/admin`. Until then the admin sign-in link lands on the other site that shares this Supabase project.
+- [x] **Supabase redirect URL for the live site.** `https://events.theaugustdispatch.com/admin` is allowed (confirmed 7 October 2026), so the admin sign-in link works on the live site.
+- [ ] **Supabase redirect URL for local use (optional).** `http://localhost:3000/admin` is not in the list yet. It is only needed to sign in to `/admin` on a local dev server.
 - [ ] **Test a real registration on the live site.** Submit the form, then check: the success screen shows an AI idea, the row appears in Supabase, and the "One step left" email arrives and looks right.
 - [ ] **Test "Mark as paid".** Sign in at `/admin`, mark your test row as paid, and check the "Your seat is confirmed" email and its calendar invite.
 - [ ] **Delete the test rows** from the `registrations` table: "Test Registration", "Test Webhook", and your own test.
