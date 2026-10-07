@@ -50,7 +50,7 @@ Without Supabase keys the form runs in a preview mode that saves nothing.
 ## Useful URLs
 
 - `/?debug=board` outlines the hero board rectangle; arrow keys nudge it and the readout gives values for `config/hero.ts`.
-- `/admin` is the registrations table. Sign-in links only go to `ADMIN_EMAIL`.
+- `/admin` is the registrations table, with mark as paid, delete and CSV export. Sign-in links only go to `ADMIN_EMAIL`.
 - `/og-source` (dev only) regenerates the link-preview image; save it over `app/opengraph-image.png`.
 
 ## Deploy

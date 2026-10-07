@@ -8,7 +8,7 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 - [ ] **Supabase redirect URL for local use (optional).** `http://localhost:3000/admin` is not in the list yet. It is only needed to sign in to `/admin` on a local dev server.
 - [ ] **Test a real registration on the live site.** Submit the form, then check: the success screen shows an AI idea, the row appears in Supabase, and the "One step left" email arrives and looks right.
 - [ ] **Test "Mark as paid".** Sign in at `/admin`, mark your test row as paid, and check the "Your seat is confirmed" email and its calendar invite.
-- [ ] **Delete the test rows** from the `registrations` table: "Test Registration", "Test Webhook", and your own test.
+- [ ] **Delete the test rows** with the Delete button in `/admin`: "Test Registration", "Test Webhook", and your own test.
 
 ## 2. Content still needed from August
 

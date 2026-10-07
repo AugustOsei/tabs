@@ -177,6 +177,23 @@ function Dashboard({ session, onSignOut }: { session: Session; onSignOut: () => 
     );
   }
 
+  async function remove(r: Registration) {
+    const paidWarning = r.payment_status === "paid" ? "\n\nThey are marked as paid. Deleting does not refund or notify them." : "";
+    if (!window.confirm(`Delete ${r.full_name}'s registration?\n\nThis cannot be undone.${paidWarning}`)) return;
+    setBusyId(r.id);
+    setNotice("");
+    const res = await api("/api/admin/delete", { method: "POST", body: JSON.stringify({ id: r.id }) }).catch(() => null);
+    const json = await res?.json().catch(() => null);
+    setBusyId(null);
+    if (!res?.ok || !json?.ok) {
+      setNotice(json?.message ?? "Could not delete the registration.");
+      load();
+      return;
+    }
+    setRows((prev) => prev?.filter((x) => x.id !== r.id) ?? prev);
+    setNotice(`${r.full_name}'s registration was deleted.`);
+  }
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return (rows ?? []).filter(
@@ -317,7 +334,7 @@ function Dashboard({ session, onSignOut }: { session: Session; onSignOut: () => 
                     <span className="rounded-full border border-white/30 px-2.5 py-1 font-mono text-xs text-mist/85">Pending</span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="space-y-2 px-4 py-3 text-right">
                   {r.payment_status === "pending" && (
                     <button
                       type="button"
@@ -329,6 +346,15 @@ function Dashboard({ session, onSignOut }: { session: Session; onSignOut: () => 
                       <span className="sr-only">: {r.full_name}</span>
                     </button>
                   )}
+                  <button
+                    type="button"
+                    onClick={() => remove(r)}
+                    disabled={busyId === r.id}
+                    className="ml-auto block whitespace-nowrap rounded-full border border-white/25 px-4 py-1.5 text-xs text-mist/80 hover:border-[#ff9d8f] hover:text-[#ff9d8f] disabled:opacity-50"
+                  >
+                    Delete
+                    <span className="sr-only">: {r.full_name}</span>
+                  </button>
                 </td>
               </tr>
             ))}
