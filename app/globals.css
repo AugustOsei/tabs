@@ -1,0 +1,474 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+/* Matches MOBILE_QUERY in config/hero.ts: landscape-ish viewports. */
+@custom-variant wide {
+  @media (min-aspect-ratio: 4/5) {
+    @slot;
+  }
+}
+/* Very short landscape viewports (phones on their side). */
+@custom-variant short {
+  @media (min-aspect-ratio: 4/5) and (max-height: 520px) {
+    @slot;
+  }
+}
+/* Short portrait phones. */
+@custom-variant squat {
+  @media (max-aspect-ratio: 4/5) and (max-height: 700px) {
+    @slot;
+  }
+}
+
+@theme {
+  --color-navy: #0d1b2a;
+  --color-navy-800: #13263a;
+  --color-navy-700: #1c3550;
+  --color-gold: #f5c518;
+  --color-mist: #eef2f6;
+}
+
+html {
+  background: var(--color-navy);
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--color-navy);
+  color: #fff;
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Lenis (desktop smooth scroll) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+/* ---------- Logo ---------- */
+.logo-cursor-blink {
+  animation: logo-blink 1.1s steps(1, end) infinite;
+}
+@keyframes logo-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ---------- Hero ----------
+   Per-breakpoint values (--ar, --bx, --by, --bw, --bh, --bias, --fit) are
+   injected from config/hero.ts by <Hero />. */
+.hero {
+  position: relative;
+  height: calc(100lvh * (1 + var(--scroll-vh)));
+}
+.hero-stage {
+  position: sticky;
+  top: 0;
+  height: 100lvh;
+  overflow: hidden;
+  background: var(--color-navy);
+}
+.hero-room {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+/* Sized like object-fit: cover, but as a real box so the board can be placed
+   inside it by percentage. */
+.hero-scene-wrap {
+  position: absolute;
+  width: max(100%, calc(100lvh * var(--ar)));
+  aspect-ratio: var(--ar);
+  left: calc((100% - max(100%, calc(100lvh * var(--ar)))) / 2);
+  top: calc((100lvh - max(100lvh, calc(100vw / var(--ar)))) * var(--bias));
+}
+.hero-scene {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+.hero-scene img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero-board {
+  position: absolute;
+  left: calc(var(--bx) * 1%);
+  top: calc(var(--by) * 1%);
+  width: calc(var(--bw) * 1%);
+  height: calc(var(--bh) * 1%);
+  background: var(--color-navy);
+  display: grid;
+  place-items: center;
+}
+.hero-logo {
+  width: calc(var(--fit) * 100%);
+  height: calc(var(--fit) * 100%);
+}
+.hero-arrow {
+  opacity: 0;
+}
+/* Match the timeline's first frame, so the logo is painted once at its final
+   size instead of repainting larger when the script starts (hurts LCP). */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-scene {
+    transform: scale(1.06);
+  }
+  .hero-logo {
+    transform: translateY(4%);
+  }
+}
+.hero-fill,
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.hero-fill {
+  background: var(--color-navy);
+  opacity: 0;
+}
+/* Sits in the small viewport so nothing hides behind mobile browser bars. */
+.hero-title {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 100svh;
+}
+.hero-title [data-in] {
+  opacity: 0;
+}
+/* The person: --p runs 0 to 1 as the hero moves from the poster beat to the
+   details beat, sliding the figure right and cropping it to head and shoulders. */
+.title-figure-move {
+  --p: 0;
+  --fx: 24vw;
+  --fy: -27svh;
+  --fs: 0.25;
+  transform-origin: 50% 18%;
+  transform: translate(calc(var(--fx) * var(--p)), calc(var(--fy) * var(--p)))
+    scale(calc(1 + var(--fs) * var(--p)));
+  will-change: transform;
+}
+@media (min-aspect-ratio: 4/5) {
+  .title-figure-move {
+    --fx: 25vw;
+    --fy: calc(0.82 * min(60svh, 50vw) - 60svh);
+    --fs: 0.5;
+  }
+}
+.person-woman,
+.hero-title[data-person="woman"] .person-man {
+  display: none;
+}
+.hero-title[data-person="woman"] .person-woman {
+  display: block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .site-logo {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.title-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 25% 100%, 100% 50%;
+  background-position: 12.5% 0, 0 38%;
+}
+.title-grain {
+  background-image: url("/assets/grain.png");
+  background-size: 96px 96px;
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+}
+.title-sparkle {
+  animation: sparkle 3.2s ease-in-out infinite;
+}
+.title-sparkle:nth-of-type(2n) {
+  animation-delay: -1.3s;
+}
+.title-sparkle:nth-of-type(3n) {
+  animation-delay: -2.2s;
+}
+@keyframes sparkle {
+  50% {
+    opacity: 0.25;
+    transform: scale(0.7);
+  }
+}
+.title-ticker {
+  animation: ticker 38s linear infinite;
+}
+@keyframes ticker {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.hero-debug .hero-board {
+  outline: 2px solid #ff2bd6;
+  outline-offset: -1px;
+  background: rgb(255 43 214 / 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero,
+  .hero-stage {
+    height: auto;
+  }
+  .hero-stage {
+    position: relative;
+  }
+  .hero-room {
+    position: relative;
+    height: 100svh;
+  }
+  .hero-title {
+    position: relative;
+  }
+  .hero-title {
+    height: 100svh;
+  }
+  .hero-title [data-in] {
+    opacity: 1;
+  }
+  /* Static composition: the details beat. */
+  .title-figure-move {
+    --p: 1;
+  }
+  .title-poster {
+    opacity: 0.07;
+  }
+  .hero-title .title-caption {
+    display: none;
+  }
+  .title-sparkle,
+  .title-ticker {
+    animation: none;
+  }
+  .hero-fill,
+  .hero-canvas,
+  .hero-arrow {
+    display: none;
+  }
+  .logo-cursor-blink {
+    animation: none;
+  }
+}
+
+/* ---------- Laptop: the build section ----------
+   Default state is open, so it is correct without JS and with reduced motion.
+   The scroll timeline closes the lid and swings it open. */
+.laptop {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  margin-inline: auto;
+  padding-bottom: 17%;
+  perspective: 1500px;
+  perspective-origin: 50% 30%;
+  font-size: clamp(8px, 2.4vw, 15px);
+}
+.laptop-glow {
+  position: absolute;
+  inset: 55% -8% -6%;
+  background: radial-gradient(closest-side, rgb(245 197 24 / 0.28), transparent);
+}
+.laptop-body {
+  position: relative;
+  width: 84%;
+  margin-inline: auto;
+  aspect-ratio: 16 / 10;
+  transform-style: preserve-3d;
+}
+.laptop-lid {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+  transform: rotateX(6deg);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.laptop-lid-front,
+.laptop-lid-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 3.2% / 5%;
+  backface-visibility: hidden;
+}
+.laptop-lid-front {
+  background: #060d15;
+  border: 3px solid var(--color-mist);
+  padding: 2.6%;
+}
+.laptop-lid-back {
+  transform: rotateX(180deg);
+  background: linear-gradient(#dfe6ee, #b9c5d3);
+  display: grid;
+  place-items: center;
+}
+.laptop-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 2% / 3%;
+  background: var(--color-navy);
+}
+.laptop-base {
+  position: absolute;
+  left: -9.5%;
+  right: -9.5%;
+  top: 100%;
+  height: 70%;
+  transform-origin: 50% 0;
+  transform: rotateX(68deg);
+  border-radius: 1.5% 1.5% 5% 5% / 3% 3% 9% 9%;
+  background: linear-gradient(#eef2f6, #c9d3df);
+  box-shadow: 0 6px 0 #9aa8b8;
+}
+.laptop-keys {
+  position: absolute;
+  inset: 8% 7% 38%;
+  border-radius: 6px;
+  background-color: #b3bfcd;
+  background-image:
+    linear-gradient(to right, #eef2f6 2px, transparent 2px),
+    linear-gradient(to bottom, #eef2f6 2px, transparent 2px);
+  background-size: 7.15% 25%;
+}
+.laptop-trackpad {
+  position: absolute;
+  left: 36%;
+  right: 36%;
+  top: 68%;
+  bottom: 7%;
+  border-radius: 6px;
+  background: #d5dde7;
+  box-shadow: inset 0 0 0 2px #b3bfcd;
+}
+
+/* ---------- Scroll-in reveals: fade, rise, blur clearing ---------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  filter: blur(8px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+    filter 0.7s ease;
+  transition-delay: var(--d, 0ms);
+}
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* ---------- Schedule ---------- */
+.schedule-tabs {
+  scrollbar-width: none;
+}
+.schedule-tabs::-webkit-scrollbar {
+  display: none;
+}
+.schedule-panel:not([hidden]) > * {
+  animation: panel-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.schedule-panel:not([hidden]) > :nth-child(2) {
+  animation-delay: 0.08s;
+}
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+  .schedule-panel:not([hidden]) > * {
+    animation: none;
+  }
+}
+
+/* ---------- Register form ---------- */
+.choice {
+  display: block;
+  cursor: pointer;
+}
+.choice > span {
+  display: block;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 0.5rem;
+  background: var(--color-navy);
+  padding: 0.75rem 1rem;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s,
+    color 0.15s;
+}
+.choice:hover > span {
+  border-color: rgb(245 197 24 / 0.7);
+}
+.choice > input:checked + span {
+  border-color: var(--color-gold);
+  background: var(--color-gold);
+  color: var(--color-navy);
+  font-weight: 600;
+}
+.choice > input:focus-visible + span {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+/* ---------- Chat assistant ---------- */
+.chat-panel {
+  animation: chat-in 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform-origin: 100% 100%;
+}
+@keyframes chat-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+}
+.chat-typing {
+  display: inline-block;
+  width: 0.5rem;
+  height: 1.1rem;
+  vertical-align: text-bottom;
+  background: var(--color-gold);
+  animation: logo-blink 0.9s steps(1, end) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-panel,
+  .chat-typing {
+    animation: none;
+  }
+}

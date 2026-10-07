@@ -1,0 +1,220 @@
+{
+  "id": "rhuxUfwEF9oxbReK",
+  "name": "TABS 1.0 — Seat confirmed",
+  "nodes": [
+    {
+      "id": "5199335f-d678-4c58-a887-676a04e095d5",
+      "name": "Site webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "a6d156c6-b570-430f-9e84-762304ba43ae",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tabs-paid",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "4337d8d6-dd63-4023-8316-b21b682787e1",
+      "name": "Respond immediately",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -180
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"success\": true }",
+        "options": {}
+      }
+    },
+    {
+      "id": "f989a8c1-f181-4276-9b03-aa6f724ae388",
+      "name": "Check secret, build email and invite",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        40
+      ],
+      "parameters": {
+        "jsCode": "// Receives the \"registration.paid\" payload from events.theaugustdispatch.com\n// (docs/n8n-webhooks.md in the site repo), then builds the \"seat confirmed\"\n// email and a calendar invite covering all four Saturdays.\nconst SECRET = 'SET_IN_N8N';\nconst input = $input.first().json;\nif ((input.headers || {})['x-webhook-secret'] !== SECRET) return [];\n\nconst p = input.body || {};\nif (p.event_type !== 'registration.paid' || !p.registration) return [];\n\nconst esc = (s) => String(s ?? '').replace(/[&<>\"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', \"'\": '&#39;' }[c]));\nconst r = p.registration, ev = p.event, ch = p.channels || {};\n\n// Calendar invite. Accra is UTC all year, so local times are written as UTC.\nconst icsText = (s) => String(s ?? '').replace(/\\\\/g, '\\\\\\\\').replace(/;/g, '\\;').replace(/,/g, '\\\\,').replace(/\\n/g, '\\\\n');\nconst stamp = (date, time) => `${date.replace(/-/g, '')}T${time.replace(':', '')}00Z`;\nconst now = new Date().toISOString().replace(/[-:]/g, '').replace(/\\.\\d+/, '');\nconst vevents = ev.dates.map((date, i) => [\n  'BEGIN:VEVENT',\n  `UID:tabs-1-0-${date}-${r.id}@events.theaugustdispatch.com`,\n  `DTSTAMP:${now}`,\n  `DTSTART:${stamp(date, ev.start_time)}`,\n  `DTEND:${stamp(date, ev.end_time)}`,\n  `SUMMARY:${icsText(`${ev.name}: Saturday ${i + 1} of ${ev.dates.length}`)}`,\n  `LOCATION:${icsText(`${ev.venue_name}, ${ev.venue_address}`)}`,\n  `DESCRIPTION:${icsText(`Bring: ${(ev.what_to_bring || []).join('; ')}.\\nDirections: ${ev.venue_maps_url}\\nQuestions: WhatsApp ${ev.contact_whatsapp}`)}`,\n  `URL:${ev.url}`,\n  'END:VEVENT',\n].join('\\r\\n'));\nconst ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//The AI Build Shop//TABS 1.0//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', ...vevents, 'END:VCALENDAR'].join('\\r\\n') + '\\r\\n';\n\nconst bring = (ev.what_to_bring || []).map((b) => `<li style=\"margin:0 0 6px\">${esc(b)}</li>`).join('');\n\nconst html = `<div style=\"background:#EEF2F6;padding:24px 12px\">\n<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:600px;margin:0 auto;background:#0D1B2A;border-radius:16px;overflow:hidden\">\n  <tr><td style=\"padding:14px 32px;border-bottom:3px solid #F5C518;font:700 13px 'Courier New',monospace;letter-spacing:1.5px;color:#F5C518\">${esc(ev.edition)}</td></tr>\n  <tr><td style=\"padding:32px 32px 0\">\n    <div style=\"font:800 30px/1.15 Arial,sans-serif;color:#ffffff\">Your seat is confirmed, ${esc(r.first_name)}.</div>\n    <div style=\"margin-top:14px;font:16px/1.6 Arial,sans-serif;color:#EEF2F6\">We have received your payment. See you at ${esc(ev.name)}.</div>\n  </td></tr>\n  <tr><td style=\"padding:24px 32px 0\"><div style=\"border:1px solid #F5C518;border-radius:12px;padding:20px;background:#13263A\">\n    <div style=\"font:700 11px 'Courier New',monospace;letter-spacing:2px;text-transform:uppercase;color:#F5C518\">When</div>\n    <div style=\"margin:4px 0 14px;font:700 17px/1.4 Arial,sans-serif;color:#ffffff\">${esc(ev.dates_label)}, ${esc(ev.start_time)} to ${esc(ev.end_time)}</div>\n    <div style=\"font:700 11px 'Courier New',monospace;letter-spacing:2px;text-transform:uppercase;color:#F5C518\">Where</div>\n    <div style=\"margin-top:4px;font:700 17px/1.4 Arial,sans-serif;color:#ffffff\">${esc(ev.venue_name)}, ${esc(ev.venue_address)}</div>\n    <div style=\"margin-top:8px\"><a href=\"${esc(ev.venue_maps_url)}\" style=\"font:15px Arial,sans-serif;color:#F5C518\">Open in Google Maps</a></div>\n  </div></td></tr>\n  <tr><td style=\"padding:22px 32px 0;font:16px/1.6 Arial,sans-serif;color:#EEF2F6\">The calendar invite attached to this email adds all four Saturdays to your calendar.</td></tr>\n  <tr><td style=\"padding:22px 32px 0;font:800 19px Arial,sans-serif;color:#ffffff\">What to bring</td></tr>\n  <tr><td style=\"padding:8px 32px 0\"><ul style=\"margin:0;padding-left:20px;font:16px/1.5 Arial,sans-serif;color:#EEF2F6\">${bring}</ul></td></tr>\n  <tr><td style=\"padding:18px 32px 0;font:16px/1.6 Arial,sans-serif;color:#EEF2F6\">${esc(ev.setup_checklist_note)}</td></tr>\n  <tr><td style=\"padding:22px 32px 32px;font:14px/1.6 Arial,sans-serif;color:#B9C5D3\">Questions? WhatsApp ${esc(ev.contact_whatsapp)} or email <a href=\"mailto:${esc(ev.contact_email)}\" style=\"color:#F5C518\">${esc(ev.contact_email)}</a>.</td></tr>\n</table></div>`;\n\nreturn [{\n  json: {\n    to: ch.email?.to || r.email,\n    emailEnabled: ch.email?.enabled !== false,\n    whatsappEnabled: ch.whatsapp?.enabled === true,\n    whatsappTo: ch.whatsapp?.to || r.whatsapp,\n    subject: `Your seat is confirmed: ${ev.name}`,\n    replyTo: ev.contact_email,\n    html,\n    registrationId: r.id,\n    firstName: r.first_name,\n  },\n  binary: {\n    invite: await this.helpers.prepareBinaryData(Buffer.from(ics, 'utf8'), 'the-ai-build-shop.ics', 'text/calendar'),\n  },\n}];"
+      }
+    },
+    {
+      "id": "27dc1d65-08a1-4c16-b96f-30d5c69c86a4",
+      "name": "Email enabled?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -40
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "0a32b739-43c1-470b-acfa-65f5096be2a2",
+              "leftValue": "={{ $json.emailEnabled }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "c0d581c9-231a-42d7-bf03-ee4507b38143",
+      "name": "Email the confirmation",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        720,
+        -40
+      ],
+      "parameters": {
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "The AI Build Shop",
+          "replyTo": "={{ $json.replyTo }}",
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "invite"
+              }
+            ]
+          }
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "XSli9zjeTSRhQNLt",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "id": "6cc6b631-36cd-404d-bd2f-b9e7d1d6c9e7",
+      "name": "WhatsApp enabled?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        480,
+        160
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "2a96b490-8a60-4ef2-83e5-e97743c4f829",
+              "leftValue": "={{ $json.whatsappEnabled }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "b39d0dcc-630f-4d6b-8e73-6edaaf1a790b",
+      "name": "WhatsApp message (add after Meta approval)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        720,
+        160
+      ],
+      "parameters": {}
+    }
+  ],
+  "connections": {
+    "Site webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond immediately",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check secret, build email and invite",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check secret, build email and invite": {
+      "main": [
+        [
+          {
+            "node": "Email enabled?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "WhatsApp enabled?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email enabled?": {
+      "main": [
+        [
+          {
+            "node": "Email the confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp enabled?": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp message (add after Meta approval)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

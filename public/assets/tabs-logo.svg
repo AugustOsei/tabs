@@ -1,0 +1,9 @@
+<svg viewBox="0 0 506 296" xmlns="http://www.w3.org/2000/svg">
+  <path d="M10 280 L10 14 Q10 4 20 4 L170 4 L192 28 L486 28 Q496 28 496 38 L496 280 Q496 290 486 290 L20 290 Q10 290 10 280 Z" fill="none" stroke="#F5C518" stroke-width="7" stroke-linejoin="round"/>
+  <line x1="10" y1="56" x2="496" y2="56" stroke="#F5C518" stroke-width="7"/>
+  <text x="34" y="44" font-family="JetBrains Mono" font-weight="700" font-size="17" fill="#fff" letter-spacing="1.5">TABS 1.0</text>
+  <circle cx="440" cy="42" r="5.5" fill="#F5C518"/><circle cx="459" cy="42" r="5.5" fill="#F5C518"/><circle cx="478" cy="42" r="5.5" fill="#F5C518"/>
+  <text x="38" y="152" font-family="Bricolage Grotesque" font-weight="800" font-size="80" fill="#fff" letter-spacing="-2">The AI</text>
+  <text x="38" y="238" font-family="Bricolage Grotesque" font-weight="800" font-size="80" fill="#fff" letter-spacing="-2">Build Shop</text>
+  <rect x="452" y="180" width="12" height="62" fill="#F5C518"/>
+</svg>
