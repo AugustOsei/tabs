@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "images": "node scripts/optimize-images.mjs",
-    "cutouts": "node scripts/optimize-cutouts.mjs"
+    "cutouts": "node scripts/optimize-cutouts.mjs",
+    "test:chat": "node scripts/chat-test.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",

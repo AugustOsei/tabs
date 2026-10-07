@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { event } from "@/content/event";
-
-type Message = { role: "user" | "assistant"; content: string };
+import { TRAILER_SEPARATOR, type ChatMessage as Message, type ChatTrailer } from "@/lib/chat/protocol";
 
 const suggestions = ["When and where is it?", "How much does it cost?", "Do I need to know how to code?", "What will I build?"];
 
@@ -31,6 +30,8 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  // Set by the server when August has wrapped the conversation up.
+  const [closed, setClosed] = useState(false);
   const logRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -50,13 +51,14 @@ export default function ChatWidget() {
 
   async function ask(question: string) {
     const q = question.trim();
-    if (!q || busy) return;
+    if (!q || busy || closed) return;
     const history: Message[] = [...messages, { role: "user", content: q }];
     setMessages([...history, { role: "assistant", content: "" }]);
     setInput("");
     setBusy(true);
 
-    const setAnswer = (content: string) => setMessages([...history, { role: "assistant", content }]);
+    const setAnswer = (content: string, trailer?: ChatTrailer) =>
+      setMessages([...history, { role: "assistant", content, sig: trailer?.sig, off: trailer?.off }]);
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -66,14 +68,19 @@ export default function ChatWidget() {
       if (!res.body) throw new Error("no stream");
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let answer = "";
+      let raw = "";
       for (;;) {
         const { done, value } = await reader.read();
         if (done) break;
-        answer += decoder.decode(value, { stream: true });
-        setAnswer(answer);
+        raw += decoder.decode(value, { stream: true });
+        setAnswer(raw.split(TRAILER_SEPARATOR)[0]);
       }
+      // The reply ends with a separator and a JSON trailer (signature, state).
+      const [answer, trailerJson] = raw.split(TRAILER_SEPARATOR);
       if (!answer.trim()) throw new Error("empty answer");
+      const trailer: ChatTrailer | undefined = trailerJson ? JSON.parse(trailerJson) : undefined;
+      setAnswer(answer, trailer);
+      if (trailer?.closed) setClosed(true);
     } catch {
       setAnswer(`Sorry, I could not answer that. Please message us on WhatsApp ${event.contact.whatsapp} or email ${event.contact.email}.`);
     } finally {
@@ -81,6 +88,13 @@ export default function ChatWidget() {
       inputRef.current?.focus();
     }
   }
+
+  const restart = () => {
+    setMessages([]);
+    setClosed(false);
+    setInput("");
+    requestAnimationFrame(() => inputRef.current?.focus());
+  };
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -154,31 +168,46 @@ export default function ChatWidget() {
             )}
           </div>
 
-          <form onSubmit={onSubmit} className="flex gap-2 border-t border-white/12 bg-navy p-3">
-            <label htmlFor="chat-input" className="sr-only">
-              Your question
-            </label>
-            <input
-              ref={inputRef}
-              id="chat-input"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              maxLength={600}
-              autoComplete="off"
-              placeholder="Ask about the event"
-              className="min-w-0 flex-1 rounded-full border border-white/20 bg-navy-800 px-4 py-2.5 text-[15px] text-white placeholder:text-mist/45 focus:border-gold focus:outline-none"
-            />
-            <button
-              type="submit"
-              disabled={busy || !input.trim()}
-              aria-label="Send question"
-              className="grid size-11 shrink-0 place-items-center rounded-full bg-gold text-navy transition-opacity disabled:opacity-40"
-            >
-              <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M4 12h15M13 6l6 6-6 6" />
-              </svg>
-            </button>
-          </form>
+          {closed ? (
+            <div className="flex flex-wrap items-center gap-3 border-t border-white/12 bg-navy p-3">
+              <a
+                href="#register"
+                onClick={() => setOpen(false)}
+                className="rounded-full bg-gold px-5 py-2.5 font-display text-[15px] font-extrabold text-navy"
+              >
+                Save your seat
+              </a>
+              <button type="button" onClick={restart} className="rounded-full px-3 py-2 text-sm text-gold underline underline-offset-4">
+                Start a new chat
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={onSubmit} className="flex gap-2 border-t border-white/12 bg-navy p-3">
+              <label htmlFor="chat-input" className="sr-only">
+                Your question
+              </label>
+              <input
+                ref={inputRef}
+                id="chat-input"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                maxLength={600}
+                autoComplete="off"
+                placeholder="Ask about the event"
+                className="min-w-0 flex-1 rounded-full border border-white/20 bg-navy-800 px-4 py-2.5 text-[15px] text-white placeholder:text-mist/45 focus:border-gold focus:outline-none"
+              />
+              <button
+                type="submit"
+                disabled={busy || !input.trim()}
+                aria-label="Send question"
+                className="grid size-11 shrink-0 place-items-center rounded-full bg-gold text-navy transition-opacity disabled:opacity-40"
+              >
+                <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M4 12h15M13 6l6 6-6 6" />
+                </svg>
+              </button>
+            </form>
+          )}
         </section>
       )}
 
