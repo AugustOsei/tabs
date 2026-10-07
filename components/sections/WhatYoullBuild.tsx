@@ -12,10 +12,11 @@ export default function WhatYoullBuild() {
         <div {...reveal()}>
           <TabLabel>what-youll-build</TabLabel>
           <h2 id="build-title" className="font-display text-4xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl">
-            {build.title}
+            What you&apos;ll build
           </h2>
-          <p className="mt-5 font-display text-xl font-semibold text-gold sm:text-2xl">{build.summary}</p>
-          <p className="mt-4 text-lg leading-relaxed text-mist/90">{build.description}</p>
+          <p className="mt-5 text-lg leading-relaxed text-mist/90">{build.summary}</p>
+          <h3 className="mt-6 font-display text-2xl font-extrabold text-gold sm:text-3xl">{build.title}</h3>
+          <p className="mt-3 text-lg leading-relaxed text-mist/90">{build.description}</p>
           <p className="mt-6 border-l-2 border-gold pl-4 text-mist/80">{build.showcase}</p>
         </div>
       </div>
