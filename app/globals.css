@@ -35,7 +35,8 @@
 
 html {
   background: var(--color-navy);
-  scroll-padding-top: 5rem;
+  /* Clears the compact header when jumping to a section. */
+  scroll-padding-top: 4.5rem;
 }
 
 body {

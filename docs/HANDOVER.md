@@ -37,6 +37,7 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 - The reduced-motion version of the page.
 - The admin table on screen while signed in (only its API was tested).
 - The chat widget on a desktop-width screen since the avatar was added.
+- The compact header on a desktop-width screen (checked at phone size only).
 - How the two emails look in a mail client.
 - Lighthouse against the live address. Local production build, mobile: Accessibility, Best practices and SEO 100; Performance 87 to 88 in the default simulated mode (target 90) and 98 with throttling actually applied.
 - Whether the footer line drawing reads as the Black Star Gate.
@@ -54,7 +55,6 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 - Rate limits (form, chat, admin sign-in) are held in memory per server instance, so on Vercel they slow bursts rather than guarantee a cap.
 - "Start a new chat" gives a visitor a fresh 12 questions; the 20-per-ten-minutes limit is the real bound.
 - Hero images are 2x upscales of 1344 px drafts and are slightly soft on large retina screens. Higgsfield can upscale them properly.
-- The fixed header sits on top of page content as it scrolls past.
 
 ## 7. What is running where
 
