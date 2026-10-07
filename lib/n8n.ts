@@ -1,5 +1,6 @@
 import { event } from "@/content/event";
 import { getPaymentInstructions } from "@/lib/payment";
+import { cardPath, createShareToken, sharePath } from "@/lib/share/token";
 
 // Payloads are documented in docs/n8n-webhooks.md. Keep the two in step.
 
@@ -19,12 +20,20 @@ export type RegistrationRecord = {
 };
 
 function basePayload(registration: RegistrationRecord) {
+  const firstName = registration.full_name.split(/\s+/)[0];
+  const token = createShareToken(firstName, registration.id);
   return {
     version: 1,
     occurred_at: new Date().toISOString(),
     registration: {
       ...registration,
-      first_name: registration.full_name.split(/\s+/)[0],
+      first_name: firstName,
+    },
+    // The person's own "I'm in" card and the page it lives on.
+    share: {
+      url: `${event.url}${sharePath(token)}`,
+      card_wide_url: `${event.url}${cardPath(token, "wide")}`,
+      card_square_url: `${event.url}${cardPath(token, "square")}`,
     },
     // One entry per delivery channel. WhatsApp becomes a new branch in n8n
     // once Meta Business verification is approved: flip `enabled` here.

@@ -33,6 +33,11 @@ blocks the registration. The payload builders live in `lib/n8n.ts`.
     "payment_status": "pending",
     "paid_at": null
   },
+  "share": {
+    "url": "https://events.theaugustdispatch.com/going/QW1h.8f0c6a3e.Xk3...",
+    "card_wide_url": "https://events.theaugustdispatch.com/going/QW1h.8f0c6a3e.Xk3.../card?shape=wide",
+    "card_square_url": "https://events.theaugustdispatch.com/going/QW1h.8f0c6a3e.Xk3.../card?shape=square"
+  },
   "channels": {
     "email": { "enabled": true, "to": "ama@example.com" },
     "whatsapp": { "enabled": false, "to": "+233241234567" }

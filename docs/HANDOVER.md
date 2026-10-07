@@ -6,9 +6,11 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 
 - [x] **Supabase redirect URL for the live site.** `https://events.theaugustdispatch.com/admin` is allowed (confirmed 7 October 2026), so the admin sign-in link works on the live site.
 - [ ] **Supabase redirect URL for local use (optional).** `http://localhost:3000/admin` is not in the list yet. It is only needed to sign in to `/admin` on a local dev server.
-- [ ] **Test a real registration on the live site.** Submit the form, then check: the success screen shows an AI idea, the row appears in Supabase, and the "One step left" email arrives and looks right.
+- [ ] **Run the referral migration.** Paste `supabase/migrations/0002_referrals.sql` into the Supabase SQL editor and run it. Until then registrations still work, but referrals are not recorded and `/admin` shows none.
+- [ ] **Test a referral.** After the migration, register through someone's share link (`/going/...`, then "Save your seat") and check `/admin` shows "Referred by" on the new row and "Referred 1" on the sharer.
+- [ ] **Test a real registration on the live site.** Submit the form, then check: the success screen shows an AI idea, the row appears in Supabase, and the "One step left" email arrives and looks right, including the share card near the bottom.
 - [ ] **Test "Mark as paid".** Sign in at `/admin`, mark your test row as paid, and check the "Your seat is confirmed" email and its calendar invite.
-- [ ] **Delete the test rows** with the Delete button in `/admin`: "Test Registration", "Test Webhook", and your own test.
+- [ ] **Delete your own test rows** with the Delete button in `/admin`. The two original test rows were removed on 7 October 2026.
 
 ## 2. Content still needed from August
 
@@ -46,8 +48,6 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 - **Seats counter and waitlist.** Left out at August's request. The static "40 seats" line remains.
 - **Reminder workflow.** See decisions above.
 - **WhatsApp messages.** Payloads carry a `channels.whatsapp` block, switched off. After Meta approval, flip `enabled` in `lib/n8n.ts` and fill the placeholder node in each workflow.
-- **Share card in the emails.** The card and its link only appear on the success screen. Add `share_url` to the n8n payloads and to both email templates so people can find their card again.
-- **Referral tracking.** Share tokens already carry the first 8 characters of the registration id. Still to do: store who referred a new registration and show it in `/admin`.
 - **Share signing key.** Share links are signed with a key derived from `SUPABASE_SERVICE_ROLE_KEY`. Rotating that key makes existing share links return "not found".
 - **Paystack.** Payment details are isolated in `lib/payment.ts` for this.
 - **Undo for "Mark as paid".** Reversing a mistake means editing the row in Supabase.

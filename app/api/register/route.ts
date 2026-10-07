@@ -3,7 +3,7 @@ import { generatePortfolioIdea } from "@/lib/ai/portfolioIdea";
 import { postWebhook, registrationCreatedPayload, type RegistrationRecord } from "@/lib/n8n";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { fieldErrors, normaliseWhatsapp, registrationSchema, type RegistrationResult } from "@/lib/registration/schema";
-import { createShareToken, sharePath } from "@/lib/share/token";
+import { createShareToken, readShareToken, sharePath } from "@/lib/share/token";
 import { getServiceClient } from "@/lib/supabase";
 
 const fail = (status: number, message: string, errors?: object) =>
@@ -45,20 +45,31 @@ export async function POST(request: Request) {
   }
 
   // 1. Insert the row.
-  const { data: row, error } = await supabase
-    .from("registrations")
-    .insert({
-      full_name: data.fullName,
-      whatsapp: normaliseWhatsapp(data.whatsapp),
-      email: data.email.toLowerCase(),
-      occupation: data.occupation,
-      site_topic: data.siteTopic,
-      ai_experience: data.aiExperience,
-      heard_from: data.heardFrom || null,
-      consent: true,
-    })
-    .select("id, created_at, full_name, whatsapp, email, occupation, site_topic, ai_experience, heard_from, ai_idea, payment_status, paid_at")
-    .single<RegistrationRecord>();
+  const fields = {
+    full_name: data.fullName,
+    whatsapp: normaliseWhatsapp(data.whatsapp),
+    email: data.email.toLowerCase(),
+    occupation: data.occupation,
+    site_topic: data.siteTopic,
+    ai_experience: data.aiExperience,
+    heard_from: data.heardFrom || null,
+    consent: true,
+  };
+  const insert = (values: object) =>
+    supabase
+      .from("registrations")
+      .insert(values)
+      .select("id, created_at, full_name, whatsapp, email, occupation, site_topic, ai_experience, heard_from, ai_idea, payment_status, paid_at")
+      .single<RegistrationRecord>();
+
+  // Only a link the site signed counts as a referral.
+  const referredBy = data.via ? (readShareToken(data.via)?.ref ?? null) : null;
+  let { data: row, error } = await insert(referredBy ? { ...fields, referred_by: referredBy } : fields);
+  if (error && referredBy) {
+    // A referral must never cost a registration (for example if the column is missing).
+    console.error("[register] insert with referral failed, retrying without it", error);
+    ({ data: row, error } = await insert(fields));
+  }
 
   if (error || !row) {
     console.error("[register] insert failed", error);

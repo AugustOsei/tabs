@@ -50,7 +50,7 @@ Without Supabase keys the form runs in a preview mode that saves nothing.
 ## Useful URLs
 
 - `/?debug=board` outlines the hero board rectangle; arrow keys nudge it and the readout gives values for `config/hero.ts`.
-- `/going/<token>` is a registered person's share page, and `/going/<token>/card` draws their "I'm in" card (`?shape=wide` or `square`). The token is a signed first name, made in `lib/share/token.ts`, so no database read is needed. Share text lives in `lib/share/messages.ts`.
+- `/going/<token>` is a registered person's share page, and `/going/<token>/card` draws their "I'm in" card (`?shape=wide` or `square`). The token is a signed first name, made in `lib/share/token.ts`, so no database read is needed. Share text lives in `lib/share/messages.ts`. The page's links carry `?via=<token>`; the form sends it with the registration and the server stores the referrer in `referred_by` (migration `0002`).
 - `/admin` is the registrations table, with mark as paid, delete and CSV export. Sign-in links only go to `ADMIN_EMAIL`.
 - `/og-source` (dev only) regenerates the link-preview image; save it over `app/opengraph-image.png`.
 

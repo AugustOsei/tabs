@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import ShareButtons from "@/components/share/ShareButtons";
 import { event } from "@/content/event";
 import { goingShareText } from "@/lib/share/messages";
@@ -127,12 +127,33 @@ function Success({ result, fullName }: { result: RegistrationResult; fullName: s
   );
 }
 
+const VIA_KEY = "tabs-via";
+
+function readVia() {
+  try {
+    return sessionStorage.getItem(VIA_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
 export default function RegisterForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState("");
   const [pending, setPending] = useState(false);
   const [done, setDone] = useState<{ result: RegistrationResult; fullName: string } | null>(null);
+
+  // Arriving through someone's share link (?via=<their token>): remember it for
+  // this visit so the referral still counts if they browse before registering.
+  useEffect(() => {
+    try {
+      const via = new URLSearchParams(window.location.search).get("via");
+      if (via) sessionStorage.setItem(VIA_KEY, via.slice(0, 200));
+    } catch {
+      // Storage is blocked: the referral is simply not recorded.
+    }
+  }, []);
 
   const focusFirstError = (errs: FieldErrors) => {
     const first = Object.keys(errs)[0];
@@ -152,6 +173,7 @@ export default function RegisterForm() {
       aiExperience: String(form.get("aiExperience") ?? ""),
       heardFrom: String(form.get("heardFrom") ?? ""),
       consent: form.get("consent") === "on",
+      via: readVia(),
     };
 
     const parsed = registrationSchema.safeParse(values);

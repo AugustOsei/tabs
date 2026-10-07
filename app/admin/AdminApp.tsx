@@ -18,7 +18,20 @@ type Registration = {
   payment_status: "pending" | "paid";
   paid_at: string | null;
   notes: string | null;
+  /** First 8 characters of the id of the registration whose share link brought this person. */
+  referred_by?: string | null;
 };
+
+/** Looks up who referred whom. A share link carries the first 8 characters of its owner's id. */
+function referralIndex(rows: Registration[]) {
+  const byRef = new Map(rows.map((r) => [r.id.slice(0, 8), r]));
+  const counts = new Map<string, number>();
+  for (const r of rows) if (r.referred_by) counts.set(r.referred_by, (counts.get(r.referred_by) ?? 0) + 1);
+  return {
+    referrerName: (r: Registration) => (r.referred_by ? (byRef.get(r.referred_by)?.full_name ?? "a deleted registration") : ""),
+    referralCount: (r: Registration) => counts.get(r.id.slice(0, 8)) ?? 0,
+  };
+}
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -42,9 +55,13 @@ const csvCell = (v: unknown) => {
   return `"${s.replace(/"/g, '""')}"`;
 };
 
-function exportCsv(rows: Registration[]) {
+function exportCsv(rows: Registration[], all: Registration[]) {
   const cols: (keyof Registration)[] = ["created_at", "full_name", "whatsapp", "email", "occupation", "site_topic", "ai_experience", "heard_from", "payment_status", "paid_at", "ai_idea", "notes", "id"];
-  const csv = [cols.join(","), ...rows.map((r) => cols.map((c) => csvCell(r[c])).join(","))].join("\r\n");
+  const { referrerName, referralCount } = referralIndex(all);
+  const csv = [
+    [...cols, "referred_by", "people_referred"].join(","),
+    ...rows.map((r) => [...cols.map((c) => r[c]), referrerName(r), referralCount(r)].map(csvCell).join(",")),
+  ].join("\r\n");
   const url = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" }));
   const a = document.createElement("a");
   a.href = url;
@@ -203,18 +220,20 @@ function Dashboard({ session, onSignOut }: { session: Session; onSignOut: () => 
     );
   }, [rows, query, status]);
 
+  const { referrerName, referralCount } = useMemo(() => referralIndex(rows ?? []), [rows]);
   const paid = rows?.filter((r) => r.payment_status === "paid").length ?? 0;
   const stats = [
     { label: "Registered", value: rows?.length ?? 0 },
     { label: "Paid", value: paid },
     { label: "Pending", value: (rows?.length ?? 0) - paid },
+    { label: "Referred", value: rows?.filter((r) => r.referred_by).length ?? 0 },
   ];
 
   return (
     <Shell onSignOut={onSignOut}>
       <h1 className="font-display text-4xl font-extrabold">Registrations</h1>
 
-      <dl className="mt-6 grid max-w-xl grid-cols-3 gap-3">
+      <dl className="mt-6 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="rounded-xl border border-white/12 bg-navy-800 px-4 py-3">
             <dt className="font-mono text-[11px] uppercase tracking-widest text-gold">{s.label}</dt>
@@ -257,7 +276,7 @@ function Dashboard({ session, onSignOut }: { session: Session; onSignOut: () => 
         </button>
         <button
           type="button"
-          onClick={() => exportCsv(filtered)}
+          onClick={() => exportCsv(filtered, rows ?? [])}
           disabled={!filtered.length}
           className="rounded-lg bg-gold px-4 py-2.5 font-display font-extrabold text-navy disabled:opacity-40"
         >
@@ -305,6 +324,9 @@ function Dashboard({ session, onSignOut }: { session: Session; onSignOut: () => 
                   <span className="block font-sans text-xs font-normal text-mist/60">
                     {r.occupation} · AI: {r.ai_experience}
                   </span>
+                  {referralCount(r) > 0 && (
+                    <span className="mt-1.5 inline-block rounded-full bg-gold px-2.5 py-0.5 font-mono text-xs font-bold text-navy">Referred {referralCount(r)}</span>
+                  )}
                 </th>
                 <td className="px-4 py-3">
                   <a href={`https://wa.me/${r.whatsapp.replace("+", "")}`} target="_blank" rel="noopener noreferrer" className="block text-gold underline underline-offset-2">
@@ -317,6 +339,7 @@ function Dashboard({ session, onSignOut }: { session: Session; onSignOut: () => 
                 <td className="max-w-xs px-4 py-3 text-mist/90">
                   {r.site_topic}
                   {r.heard_from && <span className="mt-1 block text-xs text-mist/55">Heard via: {r.heard_from}</span>}
+                  {r.referred_by && <span className="mt-1 block text-xs text-gold">Referred by: {referrerName(r)}</span>}
                   {r.ai_idea && (
                     <details className="mt-1 text-xs text-mist/70">
                       <summary className="cursor-pointer text-gold">AI idea</summary>

@@ -56,10 +56,10 @@ async function Going({ params }: { params: Promise<{ token: string }> }) {
           ))}
         </ul>
         <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-          <Link href="/#register" className="rounded-full bg-gold px-7 py-3.5 font-display text-lg font-extrabold text-navy">
+          <Link href={`/?via=${token}#register`} className="rounded-full bg-gold px-7 py-3.5 font-display text-lg font-extrabold text-navy">
             Save your seat
           </Link>
-          <Link href="/" className="text-gold underline underline-offset-4">
+          <Link href={`/?via=${token}`} className="text-gold underline underline-offset-4">
             See the full programme
           </Link>
         </div>

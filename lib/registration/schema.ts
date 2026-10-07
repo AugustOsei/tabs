@@ -63,6 +63,8 @@ export const registrationSchema = z.object({
   ),
   heardFrom: z.string().trim().max(200, "Keep this under 200 characters.").optional().default(""),
   consent: z.literal(true, "Tick the box so we can send you event messages."),
+  /** Share token of the person whose link brought this visitor, if any. Never shown on the form. */
+  via: z.string().max(200).optional().default(""),
 });
 
 export type RegistrationInput = z.input<typeof registrationSchema>;
