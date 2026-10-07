@@ -14,7 +14,6 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 
 - [ ] **Setup checklist.** The confirmation email promises one but does not include it. Add it to the Code node of the "Seat confirmed" n8n workflow, or to `content/event.ts` and the payload.
 - [ ] **White-text Venture Nest logo.** The current file has dark text, so the footer shows it on a white plate.
-- [ ] **Speaker photos.** Cards use monograms (DM, AO) for now.
 - [ ] **Showcase site URL.** `showcaseUrl` in `content/event.ts` is `null`.
 - [ ] **Confirm two derived links** in `content/event.ts`: the WhatsApp link (`wa.me/233207926546`) and the Google Maps link built from the plus code.
 

@@ -15,11 +15,26 @@ export default function Speakers() {
             <span aria-hidden="true" className="absolute right-6 top-6 font-mono text-xs text-mist/40">
               speaker-0{i + 1}
             </span>
-            {/* Monogram until photos arrive */}
-            <div aria-hidden="true" className="relative grid size-24 place-items-center">
-              <span className="absolute inset-0 rounded-full border-2 border-gold" />
-              <span className="absolute inset-2 rounded-full border border-dashed border-gold/50" />
-              <span className="font-display text-3xl font-extrabold text-gold">{sp.initials}</span>
+            {/* Photo in the gold ring, or the monogram when there is none */}
+            <div aria-hidden={sp.photo ? undefined : true} className="relative grid size-28 place-items-center">
+              <span aria-hidden="true" className="absolute inset-0 rounded-full border-2 border-gold" />
+              {sp.photo ? (
+                // eslint-disable-next-line @next/next/no-img-element -- small pre-optimised WebP
+                <img
+                  src={sp.photo}
+                  alt={`Portrait of ${sp.name}`}
+                  width={320}
+                  height={320}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-1.5 size-[calc(100%-0.75rem)] rounded-full object-cover"
+                />
+              ) : (
+                <>
+                  <span className="absolute inset-2 rounded-full border border-dashed border-gold/50" />
+                  <span className="font-display text-3xl font-extrabold text-gold">{sp.initials}</span>
+                </>
+              )}
             </div>
             <h3 className="mt-6 font-display text-3xl font-extrabold tracking-tight">{sp.name}</h3>
             <p className="mt-2 font-display font-semibold leading-snug text-gold">{sp.role}</p>

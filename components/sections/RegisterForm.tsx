@@ -228,9 +228,12 @@ export default function RegisterForm() {
 
         <div>
           <label htmlFor="siteTopic" className="font-display font-semibold">
-            What would you like your website to be about?
+            What would you like your website to be about? <span className="font-sans text-sm font-normal text-mist/60">(optional)</span>
           </label>
-          <textarea id="siteTopic" name="siteTopic" rows={3} maxLength={600} required {...aria("siteTopic")} className={`${inputClass} ${borderFor(!!errors.siteTopic)} resize-y`} />
+          <p id="siteTopic-hint" className="mt-1 text-sm text-mist/70">
+            Not sure yet? That is fine. Leave this blank and you will shape your idea in the first session.
+          </p>
+          <textarea id="siteTopic" name="siteTopic" rows={3} maxLength={600} {...aria("siteTopic")} aria-describedby={errors.siteTopic ? "siteTopic-hint siteTopic-error" : "siteTopic-hint"} className={`${inputClass} ${borderFor(!!errors.siteTopic)} resize-y`} />
           <ErrorText id="siteTopic-error" message={errors.siteTopic} />
         </div>
 

@@ -13,6 +13,9 @@ export const experienceLevels = [
   { value: "regular", label: "I use them regularly" },
 ] as const;
 
+/** Stored as the site topic when the registrant leaves that question blank. */
+export const SITE_TOPIC_UNDECIDED = "Not sure yet";
+
 /**
  * Normalises a WhatsApp number to E.164. Ghana numbers may be written locally
  * (0207926546) or with the country code (233207926546, +233 20 792 6546);
@@ -50,8 +53,10 @@ export const registrationSchema = z.object({
   siteTopic: z
     .string()
     .trim()
-    .min(3, "Tell us a little about what your website could be about.")
-    .max(600, "Keep this under 600 characters."),
+    .max(600, "Keep this under 600 characters.")
+    .refine((v) => v.length === 0 || v.length >= 3, "Add a few more words, or leave this blank.")
+    // Optional on the form; the database column is required, so a blank answer is stored as this.
+    .transform((v) => v || SITE_TOPIC_UNDECIDED),
   aiExperience: z.enum(
     experienceLevels.map((e) => e.value),
     "Choose your experience with AI tools.",

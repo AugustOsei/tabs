@@ -9,6 +9,7 @@
     "lint": "eslint",
     "images": "node scripts/optimize-images.mjs",
     "cutouts": "node scripts/optimize-cutouts.mjs",
+    "speakers": "node scripts/optimize-speakers.mjs",
     "test:chat": "node scripts/chat-test.mjs"
   },
   "dependencies": {

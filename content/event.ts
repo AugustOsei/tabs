@@ -49,8 +49,8 @@ export const event = {
 
   payment: {
     method: "Mobile Money",
-    number: "0207926546",
-    accountName: "August Lab LLC",
+    number: "0597580640",
+    accountName: "Daniel Kweku Merki",
     reference: "Use your full name as the reference.",
     confirmation: "Your seat is confirmed once payment is received.",
   },
@@ -141,13 +141,12 @@ export const event = {
   speakers: [
     {
       id: "daniel-merki",
-      name: "Daniel Kwaku Merki",
+      name: "Daniel Kweku Merki",
       initials: "DM",
       role: "Country Director, Zipline Ghana; Venture Builder, Boxplay Ventures",
       bio: "Builds African ventures from idea to commercialisation, capital and scale. Opens the course on 7 November with the story of how Zipline uses technology to change lives in Ghana, and returns for Demo Day on 28 November.",
       linkedin: "https://www.linkedin.com/in/danielmerki/",
-      // TODO: speaker photo not provided yet (monogram used for now).
-      photo: null as string | null,
+      photo: "/assets/speaker-daniel-merki-320.webp" as string | null,
     },
     {
       id: "augustine-osei",
@@ -155,9 +154,8 @@ export const event = {
       initials: "AO",
       role: "Lead Facilitator, Founder of August Labs",
       bio: "Augustine, known as August, is an IT and cybersecurity professional who builds with AI in public. His projects include GhanaNice.com, an AI-powered guide to discovering Ghana, and browser games such as CHOP FIRST. He also publishes The August Dispatch.",
-      linkedin: null as string | null,
-      // TODO: speaker photo not provided yet (monogram used for now).
-      photo: null as string | null,
+      linkedin: "https://www.linkedin.com/in/augustineosei/" as string | null,
+      photo: "/assets/speaker-augustine-osei-320.webp" as string | null,
     },
   ],
   guestSpeakerNote: "A special guest speaker may join one session, to be announced.",
@@ -173,7 +171,7 @@ export const event = {
     "Four hands-on sessions",
     "Your own live website",
     "A feature on the showcase site",
-    "A WhatsApp community to keep learning after the course",
+    "A community to keep learning after the course",
   ],
   // TODO: setup checklist content to be supplied.
   setupChecklistNote: "A short setup checklist is sent before the first session.",
