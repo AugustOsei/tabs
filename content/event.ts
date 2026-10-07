@@ -50,7 +50,7 @@ export const event = {
   payment: {
     method: "Mobile Money",
     number: "0597580640",
-    accountName: "Daniel Kweku Merki",
+    accountName: "Daniel Kwaku Merki",
     reference: "Use your full name as the reference.",
     confirmation: "Your seat is confirmed once payment is received.",
   },
@@ -141,7 +141,7 @@ export const event = {
   speakers: [
     {
       id: "daniel-merki",
-      name: "Daniel Kweku Merki",
+      name: "Daniel Kwaku Merki",
       initials: "DM",
       role: "Country Director, Zipline Ghana; Venture Builder, Boxplay Ventures",
       bio: "Builds African ventures from idea to commercialisation, capital and scale. Opens the course on 7 November with the story of how Zipline uses technology to change lives in Ghana, and returns for Demo Day on 28 November.",

@@ -59,7 +59,7 @@ blocks the registration. The payload builders live in `lib/n8n.ts`.
     "amountLabel": "GHS 200",
     "method": "Mobile Money",
     "number": "0597580640",
-    "accountName": "Daniel Kweku Merki",
+    "accountName": "Daniel Kwaku Merki",
     "reference": "Ama Mensah",
     "referenceNote": "Use your full name as the reference.",
     "confirmationNote": "Your seat is confirmed once payment is received.",
