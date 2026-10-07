@@ -1,7 +1,9 @@
 "use client";
 
 import { useRef, useState, type FormEvent } from "react";
+import ShareButtons from "@/components/share/ShareButtons";
 import { event } from "@/content/event";
+import { goingShareText } from "@/lib/share/messages";
 import { getPaymentInstructions } from "@/lib/payment";
 import {
   experienceLevels,
@@ -88,7 +90,28 @@ function Success({ result, fullName }: { result: RegistrationResult; fullName: s
           ))}
         </ol>
         <p className="mt-7 rounded-xl bg-gold px-5 py-4 font-display text-lg font-extrabold text-navy">{pay.confirmationNote}</p>
-        <p className="mt-4 text-sm text-mist/75">
+        {result.sharePath && (
+          <section className="mt-9 border-t border-white/12 pt-7">
+            <h4 className="font-display text-xl font-extrabold">Tell your network</h4>
+            <p className="mt-2 text-mist/85">This card is yours. Share it and bring a friend along.</p>
+            {/* eslint-disable-next-line @next/next/no-img-element -- generated per person by the card route */}
+            <img
+              src={`${result.sharePath}/card?shape=square`}
+              alt={`${result.firstName} is building at ${event.name}`}
+              width={1080}
+              height={1080}
+              loading="lazy"
+              className="mt-5 w-full max-w-sm rounded-xl border border-white/12"
+            />
+            <ShareButtons
+              className="mt-5"
+              url={`${event.url}${result.sharePath}`}
+              text={goingShareText}
+              image={{ src: `${result.sharePath}/card?shape=square`, fileName: "im-building-at-the-ai-build-shop.png" }}
+            />
+          </section>
+        )}
+        <p className="mt-8 text-sm text-mist/75">
           {pay.refundPolicy} Questions? WhatsApp{" "}
           <a href={event.contact.whatsappUrl} className="text-gold underline underline-offset-4">
             {event.contact.whatsapp}

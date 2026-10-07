@@ -46,6 +46,9 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 - **Seats counter and waitlist.** Left out at August's request. The static "40 seats" line remains.
 - **Reminder workflow.** See decisions above.
 - **WhatsApp messages.** Payloads carry a `channels.whatsapp` block, switched off. After Meta approval, flip `enabled` in `lib/n8n.ts` and fill the placeholder node in each workflow.
+- **Share card in the emails.** The card and its link only appear on the success screen. Add `share_url` to the n8n payloads and to both email templates so people can find their card again.
+- **Referral tracking.** Share tokens already carry the first 8 characters of the registration id. Still to do: store who referred a new registration and show it in `/admin`.
+- **Share signing key.** Share links are signed with a key derived from `SUPABASE_SERVICE_ROLE_KEY`. Rotating that key makes existing share links return "not found".
 - **Paystack.** Payment details are isolated in `lib/payment.ts` for this.
 - **Undo for "Mark as paid".** Reversing a mistake means editing the row in Supabase.
 

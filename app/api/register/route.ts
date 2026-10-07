@@ -3,6 +3,7 @@ import { generatePortfolioIdea } from "@/lib/ai/portfolioIdea";
 import { postWebhook, registrationCreatedPayload, type RegistrationRecord } from "@/lib/n8n";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { fieldErrors, normaliseWhatsapp, registrationSchema, type RegistrationResult } from "@/lib/registration/schema";
+import { createShareToken, sharePath } from "@/lib/share/token";
 import { getServiceClient } from "@/lib/supabase";
 
 const fail = (status: number, message: string, errors?: object) =>
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
 
   // Honeypot: real people never fill this hidden field. Pretend it worked.
   if (typeof body.website === "string" && body.website.trim() !== "") {
-    return NextResponse.json({ ok: true, firstName: "", aiIdea: null, preview: false } satisfies RegistrationResult);
+    return NextResponse.json({ ok: true, firstName: "", aiIdea: null, sharePath: null, preview: false } satisfies RegistrationResult);
   }
 
   const parsed = registrationSchema.safeParse(body);
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
     }
     // Development without Supabase keys: preview the flow, save nothing.
     const aiIdea = await generatePortfolioIdea(data);
-    return NextResponse.json({ ok: true, firstName, aiIdea, preview: true } satisfies RegistrationResult);
+    return NextResponse.json({ ok: true, firstName, aiIdea, sharePath: sharePath(createShareToken(firstName, "00000000")), preview: true } satisfies RegistrationResult);
   }
 
   // 1. Insert the row.
@@ -75,5 +76,5 @@ export async function POST(request: Request) {
   // 3. Tell n8n.
   await postWebhook(process.env.N8N_WEBHOOK_REGISTRATION_URL, registrationCreatedPayload({ ...row, ai_idea: aiIdea }));
 
-  return NextResponse.json({ ok: true, firstName, aiIdea, preview: false } satisfies RegistrationResult);
+  return NextResponse.json({ ok: true, firstName, aiIdea, sharePath: sharePath(createShareToken(firstName, row.id)), preview: false } satisfies RegistrationResult);
 }

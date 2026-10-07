@@ -1,6 +1,8 @@
 import Image from "next/image";
 import TabsLogo from "@/components/TabsLogo";
+import ShareButtons from "@/components/share/ShareButtons";
 import { event } from "@/content/event";
+import { eventShareText } from "@/lib/share/messages";
 
 // Line drawing of Accra's Black Star Gate.
 function BlackStarGate({ className }: { className?: string }) {
@@ -61,7 +63,12 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-8 border-t border-white/12 pt-8 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mt-12">
+          <h2 className="font-mono text-xs uppercase tracking-widest text-gold">Share this event</h2>
+          <ShareButtons className="mt-4" url={event.url} text={eventShareText} />
+        </div>
+
+        <div className="mt-12 flex flex-col gap-8 border-t border-white/12 pt-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="mb-5 font-mono text-xs tracking-wide text-mist/65">{event.presentedBy}</p>
             <ul className="flex flex-wrap items-center gap-6">

@@ -1,5 +1,7 @@
 import { event } from "@/content/event";
 import { reveal } from "@/lib/reveal";
+import ShareButtons from "@/components/share/ShareButtons";
+import { eventShareText } from "@/lib/share/messages";
 import RegisterForm from "./RegisterForm";
 import Section from "./Section";
 
@@ -38,6 +40,10 @@ export default function Register() {
             ))}
           </ol>
           <p className="mt-6 font-display font-semibold text-white">{payment.confirmation}</p>
+
+          <h3 className="mt-8 border-t border-white/12 pt-6 font-display text-xl font-extrabold">Know someone who should come?</h3>
+          <p className="mt-2 text-mist/85">Send them this page.</p>
+          <ShareButtons className="mt-4" url={event.url} text={eventShareText} />
         </aside>
       </div>
     </Section>

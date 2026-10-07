@@ -84,6 +84,8 @@ export type RegistrationResult = {
   ok: true;
   firstName: string;
   aiIdea: string | null;
+  /** Path of this person's share page, or null when there is none. */
+  sharePath: string | null;
   /** True when Supabase is not configured in development and nothing was saved. */
   preview: boolean;
 };
