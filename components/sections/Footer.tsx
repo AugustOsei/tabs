@@ -73,8 +73,16 @@ export default function Footer() {
             <p className="mb-5 font-mono text-xs tracking-wide text-mist/65">{event.presentedBy}</p>
             <ul className="flex flex-wrap items-center gap-6">
               {event.partners.map((p) => (
-                <li key={p.name} className={p.name === "Venture Nest" ? "rounded-lg bg-white px-4 py-3" : ""}>
-                  <Image src={p.logo} alt={p.name} width={p.width} height={p.height} className="h-8 w-auto" />
+                <li key={p.name}>
+                  <a
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`block transition-opacity hover:opacity-80 ${p.onWhite ? "rounded-lg bg-white px-4 py-3" : ""}`}
+                  >
+                    <Image src={p.logo} alt={p.name} width={p.width} height={p.height} className="h-8 w-auto" />
+                    <span className="sr-only">(opens in a new tab)</span>
+                  </a>
                 </li>
               ))}
             </ul>

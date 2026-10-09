@@ -194,21 +194,34 @@ export const event = {
   // TODO: setup checklist content to be supplied.
   setupChecklistNote: "A short setup checklist is sent before the first session.",
 
+  // `onWhite` logos are dark artwork, so the footer sets them on a white plate.
   partners: [
     {
       name: "The August Dispatch",
+      url: "https://www.theaugustdispatch.com/",
       logo: "/assets/partner-august-dispatch.png",
       width: 767,
       height: 165,
+      onWhite: false,
     },
     {
       name: "Venture Nest",
+      url: "https://venturenest.space/",
       logo: "/assets/partner-venture-nest.png",
       width: 642,
       height: 95,
+      onWhite: true,
+    },
+    {
+      name: "BUILD_it",
+      url: "https://builditlabs.io/",
+      logo: "/assets/partner-build-it.png",
+      width: 587,
+      height: 122,
+      onWhite: true,
     },
   ],
-  presentedBy: "Presented by The August Dispatch and Venture Nest",
+  presentedBy: "Presented by",
 } as const;
 
 export type EventFacts = typeof event;
