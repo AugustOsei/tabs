@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Instrument_Sans, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import { event } from "@/content/event";
 import "./globals.css";
 
@@ -26,6 +27,11 @@ const jetbrains = JetBrains_Mono({
   weight: ["500", "700"],
   display: "swap",
 });
+
+// Google Analytics 4 measurement ID. Public by design: it ships in the page source.
+const GA_ID = "G-FYJ7X23G8Y";
+// Only the live site reports, so local and preview visits stay out of the numbers.
+const analyticsOn = process.env.VERCEL_ENV === "production";
 
 const title = `${event.name} (${event.edition}) | ${event.tagline}`;
 const description = `Four hands-on Saturdays in Accra: ${event.dates.short}, ${event.time.short} at ${event.venue.name}, Osu. Build your own live website with AI. ${event.price.label}. ${event.audience.callout}`;
@@ -61,6 +67,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <style>{`.hero-title [data-in] { opacity: 1 !important; } .site-logo { opacity: 1 !important; visibility: visible !important; } .title-figure-move { --p: 1; } .title-poster { opacity: 0.07; } .hero-title .title-caption { display: none; } [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }`}</style>
         </noscript>
         {children}
+        {analyticsOn && (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+            <Script id="ga-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_ID}');`}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );

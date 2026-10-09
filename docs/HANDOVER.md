@@ -42,6 +42,7 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 - How the two emails look in a mail client.
 - Lighthouse against the live address. Local production build, mobile: Accessibility, Best practices and SEO 100; Performance 87 to 88 in the default simulated mode (target 90) and 98 with throttling actually applied.
 - Whether the footer line drawing reads as the Black Star Gate.
+- Google Analytics receiving hits. The tag (`G-FYJ7X23G8Y`, in `app/layout.tsx`) is in the production build output but has not been checked in GA's Realtime view.
 
 ## 5. Not built
 
@@ -49,6 +50,8 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 - **Reminder workflow.** See decisions above.
 - **WhatsApp messages.** Payloads carry a `channels.whatsapp` block, switched off. After Meta approval, flip `enabled` in `lib/n8n.ts` and fill the placeholder node in each workflow.
 - **Share signing key.** Share links are signed with a key derived from `SUPABASE_SERVICE_ROLE_KEY`. Rotating that key makes existing share links return "not found".
+- **Meta Pixel.** Not installed. Needs a Pixel ID from August.
+- **Analytics events and consent.** Google Analytics counts page views only, on the live site only (`VERCEL_ENV=production`), and on every route including `/admin`. No registration conversion event and no cookie notice.
 - **Paystack.** Payment details are isolated in `lib/payment.ts` for this.
 - **Undo for "Mark as paid".** Reversing a mistake means editing the row in Supabase.
 
