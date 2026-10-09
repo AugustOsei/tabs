@@ -226,3 +226,4 @@ export const event = {
 
 export type EventFacts = typeof event;
 export type Session = EventFacts["schedule"]["sessions"][number];
+export type Speaker = EventFacts["speakers"][number];

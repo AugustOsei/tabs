@@ -42,6 +42,7 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 - How the two emails look in a mail client.
 - Lighthouse against the live address. Local production build, mobile: Accessibility, Best practices and SEO 100; Performance 87 to 88 in the default simulated mode (target 90) and 98 with throttling actually applied.
 - Whether the footer line drawing reads as the Black Star Gate.
+- The speaker lanyards on a real touchscreen. Dragging was tested with scripted pointer events in desktop emulation only.
 - Google Analytics receiving hits. The tag (`G-FYJ7X23G8Y`, in `app/layout.tsx`) is in the production build output but has not been checked in GA's Realtime view.
 
 ## 5. Not built

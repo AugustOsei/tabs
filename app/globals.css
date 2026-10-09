@@ -386,6 +386,13 @@ html.lenis body {
   filter: none;
 }
 
+/* ---------- Speaker lanyards ---------- */
+.lanyard-strap {
+  background:
+    repeating-linear-gradient(180deg, transparent 0 7px, rgb(13 27 42 / 0.28) 7px 8px),
+    linear-gradient(90deg, #c99f0c, var(--color-gold) 30%, var(--color-gold) 70%, #c99f0c);
+}
+
 /* ---------- Schedule ---------- */
 .schedule-tabs {
   scrollbar-width: none;
