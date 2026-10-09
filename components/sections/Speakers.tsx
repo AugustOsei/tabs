@@ -56,15 +56,6 @@ export default function Speakers() {
           </article>
         ))}
       </div>
-      <p
-        {...reveal(160)}
-        className="mt-6 flex items-center gap-4 rounded-2xl border border-dashed border-white/25 px-6 py-5 text-mist/80"
-      >
-        <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-full border border-dashed border-gold/70 font-display text-lg font-extrabold text-gold">
-          ?
-        </span>
-        {event.guestSpeakerNote}
-      </p>
     </Section>
   );
 }

@@ -10,6 +10,8 @@ const SIZE = 320;
 const jobs = [
   { src: "speaker-daniel-src.png", name: "speaker-daniel-merki" },
   { src: "speaker-augustine-src.png", name: "speaker-augustine-osei", crop: { left: 290, top: 0, width: 820, height: 820 } },
+  { src: "speaker-sam-src.png", name: "speaker-sam-yeboah" },
+  { src: "speaker-joelon-src.png", name: "speaker-joelon-johnson" },
 ];
 
 for (const { src, name, crop } of jobs) {

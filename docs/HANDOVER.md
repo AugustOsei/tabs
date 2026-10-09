@@ -27,9 +27,9 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 | Email sender address | Emails go out through the existing Gmail credential, shown as "The AI Build Shop", replies to theteam@augustwheel.com. Sending from theteam@ itself needs its own n8n credential. |
 | Future events | TABS 1.0 is the home page. Before a second event, move it to its own address (for example `/tabs-1-0`) and make the home page a list. Worth doing before links are shared widely. |
 | Public repo contents | The repo is public and includes `n8n/` (server address, webhook paths, workflow IDs; no secrets) and 13 MB of `assets/drafts/`. Remove them or make the repo private if preferred. |
-| Connect Vercel to GitHub | Not connected. Deploys are manual from the folder. |
 | Own Supabase project | The current project is shared with another site, so login users are shared too. |
 | Woman illustration | Her kente stole is large, more than the "tiny accents" in the brand brief. Can be regenerated. |
+| New speakers | Sam Kwabena A. Yeboah and Joelon Johnson were added from their LinkedIn profiles. The schedule says Sam gives a welcome for Venture Nest on 7 Nov and Joelon a guest talk on 14 Nov. Confirm the bios with them and whether they attend in person. |
 | Deploying small changes | The last wording change was deployed without asking first. Say if each deploy should be approved. |
 
 ## 4. Never verified

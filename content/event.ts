@@ -99,7 +99,7 @@ export const event = {
         dateLabel: "Sat 7 Nov",
         title: "Meet your AI toolkit",
         description:
-          "Opening talk from Daniel Merki of Zipline Ghana, a tour of everyday AI tools, how to write good prompts, and shaping your website idea.",
+          "A welcome from Sam Kwabena A. Yeboah on behalf of Venture Nest, an opening talk from Daniel Merki of Zipline Ghana, a tour of everyday AI tools, how to write good prompts, and shaping your website idea.",
         linkedGroup: null,
       },
       {
@@ -109,7 +109,7 @@ export const event = {
         dateLabel: "Sat 14 Nov",
         title: "Vibe Coding 101: Part 1",
         description:
-          "Plan your page, find design inspiration, and use AI to write your text and create your images.",
+          "Plan your page, find design inspiration, and use AI to write your text and create your images. Guest talk from Joelon Johnson on how he uses AI and the systems you never see.",
         linkedGroup: "vibe-coding-101",
       },
       {
@@ -157,8 +157,26 @@ export const event = {
       linkedin: "https://www.linkedin.com/in/augustineosei/" as string | null,
       photo: "/assets/speaker-augustine-osei-320.webp" as string | null,
     },
+    // TODO(August): confirm both bios with the speakers.
+    {
+      id: "sam-yeboah",
+      name: "Sam Kwabena A. Yeboah",
+      initials: "SY",
+      role: "Co-Founder, Boxplay Ventures; Founding Partner, Venture Nest",
+      bio: "Builds ventures and founders across African markets, and started his first businesses as a student in Ghana. He has spent a decade setting up sustainability and compliance systems for manufacturers in Europe, and now does that for Gardena, part of Husqvarna Group.",
+      linkedin: "https://www.linkedin.com/in/sam-kwabena-a-yeboah-mba/",
+      photo: "/assets/speaker-sam-yeboah-320.webp",
+    },
+    {
+      id: "joelon-johnson",
+      name: "Joelon Johnson",
+      initials: "JJ",
+      role: "Infrastructure and Energy Systems Consultant; Co-Founder, Partum Global",
+      bio: "Spent ten years at Ghana Electrometer, where he looked after the databases behind prepaid metering across ECG districts and led smart meter rollouts in Accra and Kumasi. He holds an MSc in Computer Science.",
+      linkedin: "https://www.linkedin.com/in/joelon-johnson-6a008a65/",
+      photo: "/assets/speaker-joelon-johnson-320.webp",
+    },
   ],
-  guestSpeakerNote: "A special guest speaker may join one session, to be announced.",
 
   bring: [
     "Your laptop",
