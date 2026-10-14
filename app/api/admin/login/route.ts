@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 import { isAdminEmail } from "@/lib/admin/auth";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 
-// Sends a magic link, but only ever to the admin email. Every other address
-// gets the same response, so the endpoint does not reveal who the admin is.
+// Sends a magic link, but only ever to an admin email. Every other address
+// gets the same response, so the endpoint does not reveal who the admins are.
 export async function POST(request: Request) {
   if (!rateLimit(`admin-login:${clientIp(request)}`, 5, 15 * 60 * 1000)) {
     return NextResponse.json({ ok: false, message: "Too many attempts. Try again in a few minutes." }, { status: 429 });

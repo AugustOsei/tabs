@@ -1,9 +1,14 @@
 import { getServiceClient } from "@/lib/supabase";
 
-export const isAdminEmail = (email: string | null | undefined) => {
-  const admin = process.env.ADMIN_EMAIL?.trim().toLowerCase();
-  return !!admin && !!email && email.trim().toLowerCase() === admin;
-};
+// ADMIN_EMAIL holds one address or several separated by commas.
+const adminEmails = () =>
+  (process.env.ADMIN_EMAIL ?? "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+
+export const isAdminEmail = (email: string | null | undefined) =>
+  !!email && adminEmails().includes(email.trim().toLowerCase());
 
 /**
  * Checks the Supabase access token sent as `Authorization: Bearer <token>` and

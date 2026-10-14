@@ -40,7 +40,7 @@ Without Supabase keys the form runs in a preview mode that saves nothing.
 | `components/chat/` | The "August" chat widget |
 | `app/api/register` | Saves a registration, generates the AI idea, calls n8n |
 | `app/api/chat` | Streaming assistant with its guard rails |
-| `app/admin`, `app/api/admin/*` | Admin page and its API (magic link, one allowed email) |
+| `app/admin`, `app/api/admin/*` | Admin page and its API (magic link, allowed emails only) |
 | `lib/payment.ts` | All payment details in one module, ready for Paystack later |
 | `lib/n8n.ts`, `docs/n8n-webhooks.md` | Webhook payload builders and their documentation |
 | `n8n/` | Copies of the two live n8n workflows, secret removed |
@@ -51,7 +51,7 @@ Without Supabase keys the form runs in a preview mode that saves nothing.
 
 - `/?debug=board` outlines the hero board rectangle; arrow keys nudge it and the readout gives values for `config/hero.ts`.
 - `/going/<token>` is a registered person's share page, and `/going/<token>/card` draws their "I'm in" card (`?shape=wide` or `square`). The token is a signed first name, made in `lib/share/token.ts`, so no database read is needed. Share text lives in `lib/share/messages.ts`. The page's links carry `?via=<token>`; the form sends it with the registration and the server stores the referrer in `referred_by` (migration `0002`).
-- `/admin` is the registrations table, with mark as paid, delete and CSV export. Sign-in links only go to `ADMIN_EMAIL`.
+- `/admin` is the registrations table, with mark as paid, delete and CSV export. Sign-in links only go to the addresses in `ADMIN_EMAIL` (comma-separated).
 - `/og-source` (dev only) regenerates the link-preview image; save it over `app/opengraph-image.png`.
 
 ## Deploy

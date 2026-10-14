@@ -37,7 +37,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // The browser client only handles the magic-link session. All data goes
-// through /api/admin/*, which checks the session against ADMIN_EMAIL.
+// through /api/admin/*, which checks the session against the addresses in ADMIN_EMAIL.
 let browserClient: SupabaseClient | null = null;
 function getBrowserClient() {
   if (!supabaseUrl || !supabaseAnon) return null;
