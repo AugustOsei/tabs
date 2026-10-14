@@ -37,6 +37,7 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 - A real phone, especially a mid-range Android (only desktop emulation was used).
 - The reduced-motion version of the page.
 - The admin table on screen while signed in (only its API was tested).
+- Sign-in for the two extra admins (poga@ and ventures@boxplayventures.com, added 14 October 2026). The list is set on Vercel, but neither has signed in yet.
 - The chat widget on a desktop-width screen since the avatar was added.
 - The compact header on a desktop-width screen (checked at phone size only).
 - How the two emails look in a mail client.
