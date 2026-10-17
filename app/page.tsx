@@ -11,9 +11,6 @@ import Speakers from "@/components/sections/Speakers";
 import WhatYoullBuild from "@/components/sections/WhatYoullBuild";
 import WhoItsFor from "@/components/sections/WhoItsFor";
 import { event } from "@/content/event";
-import { hero, MOBILE_QUERY, type HeroVariant } from "@/config/hero";
-
-const avifSet = (v: HeroVariant) => v.widths.map((w) => `${v.image}-${w}.avif ${w}w`).join(", ");
 
 // Structured data so search engines can show the event's dates, place and price.
 const jsonLd = {
@@ -39,25 +36,6 @@ const jsonLd = {
 export default function Home() {
   return (
     <>
-      {/* Preload the right hero image for this viewport. */}
-      <link
-        rel="preload"
-        as="image"
-        type="image/avif"
-        imageSrcSet={avifSet(hero.mobile)}
-        imageSizes={hero.mobile.sizes}
-        media={MOBILE_QUERY}
-        fetchPriority="high"
-      />
-      <link
-        rel="preload"
-        as="image"
-        type="image/avif"
-        imageSrcSet={avifSet(hero.desktop)}
-        imageSizes={hero.desktop.sizes}
-        media={`not ${MOBILE_QUERY}`}
-        fetchPriority="high"
-      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <SmoothScroll />
       <RevealObserver />

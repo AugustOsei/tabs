@@ -62,7 +62,8 @@ Last updated: 7 October 2026. The site is live at https://events.theaugustdispat
 - Rate limits (form, chat, admin sign-in) are held in memory per server instance, so on Vercel they slow bursts rather than guarantee a cap.
 - "Start a new chat" gives a visitor a fresh 12 questions; the 20-per-ten-minutes limit is the real bound.
 - Hero images are 2x upscales of 1344 px drafts and are slightly soft on large retina screens. Higgsfield can upscale them properly.
-
+- The hero character (a cartoon man in a kente tee) follows the cursor through `components/hero/head-rig.ts`, the technique of the Coconut Button Club site: a 5 x 9 grid of real poses (rows tilt from up to down, columns turn left to right) painted over the still body, with a springy follow, a 70 ms blend between poses, painted-on blinks and idle glances when nobody is pointing. Each pose repaints the whole upper body, so nothing is stitched at the neck. The poses are GPT Image 2.5 edits of `assets/drafts/hero-head/still.webp` (about 0.06 credits each), stored in `assets/drafts/hero-head/grid/`. `wide.webp` is an outpaint of the still that gives him full shoulders; the build script lays the still and the poses exactly over it, and `scripts/build-head-rig.py` writes everything to `public/assets/hero-head/`. If the stage size changes, update `STAGE` in `components/hero/Hero.tsx`. Video clips were tried first and abandoned: Seedance treats start and end frames as loose references, so clips zoomed, leaned or spun the whole body. Reduced motion gets the still. Only checked in Chrome; not yet seen on Safari or a real phone.
+- The hero headline is `event.tagline` under a "Welcome to The AI Build Shop" label; the big wordmark that repeated the logo is gone.
 ## 7. What is running where
 
 | Thing | Where |

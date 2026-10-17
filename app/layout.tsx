@@ -64,7 +64,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body>
         <noscript>
-          <style>{`.hero-title [data-in] { opacity: 1 !important; } .site-logo { opacity: 1 !important; visibility: visible !important; } .title-figure-move { --p: 1; } .title-poster { opacity: 0.07; } .hero-title .title-caption { display: none; } [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }`}</style>
+          <style>{`[data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }`}</style>
         </noscript>
         {children}
         {analyticsOn && (

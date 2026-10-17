@@ -1,11 +1,8 @@
 import HeaderScrollState from "@/components/HeaderScrollState";
 import TabsLogo from "@/components/TabsLogo";
 
-// Fixed site header.
-// Over the hero it is transparent with a large logo. The logo stays hidden
-// while the room scene plays (it is on the board there) and fades in once the
-// title appears. After the hero has scrolled away it becomes a slim solid bar
-// with a smaller logo, so page content passes cleanly underneath it.
+// Fixed site header. It is spacious over the hero and becomes a slim solid bar
+// once the hero has scrolled away, so page content passes cleanly underneath.
 export default function Header() {
   return (
     <header
